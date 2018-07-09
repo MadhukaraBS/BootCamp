@@ -1,0 +1,7 @@
+To display 1 to 10 lines from /etc/passwd file and number all output lines, enter:
+sed -n "1,10p" /etc/passwd | cat -n
+
+To print first 10 lines of file elecation_data.csv
+sed -n "1,10p" election_data.csv
+head +10 election_data.csv
+head -n 6 election_data.csv
