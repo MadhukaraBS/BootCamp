@@ -83,3 +83,20 @@ FROM
     actor
 GROUP BY last_name
 HAVING `Total Actors` > 1;
+
+-- The actor HARPO WILLIAMS was accidentally entered in the
+-- actor table as GROUCHO WILLIAMS . Write a query to fix the record.
+-- Following extra statements were done to understand the behavior
+-- even though they are not required for the homework
+select first_name, last_name from actor WHERE first_name = 'GROUCHO' and last_name = 'WILLIAMS';
+UPDATE actor SET first_name = 'HARPO' WHERE first_name = 'GROUCHO' and last_name = 'WILLIAMS';
+select first_name, last_name from actor WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
+UPDATE actor SET first_name = upper('HARPO') WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
+
+-- 4d. Perhaps we were too hasty in changing GROUCHO to HARPO .
+-- It turns out that GROUCHO was the correct name after all!
+-- In a single query, if the first name of the actor is currently HARPO,
+-- change it to GROUCHO
+select first_name, last_name from actor WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
+UPDATE actor SET first_name = 'GROUCHO' WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
+select first_name, last_name from actor WHERE first_name = 'GROUCHO' and last_name = 'WILLIAMS';
