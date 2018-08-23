@@ -88,15 +88,76 @@ HAVING `Total Actors` > 1;
 -- actor table as GROUCHO WILLIAMS . Write a query to fix the record.
 -- Following extra statements were done to understand the behavior
 -- even though they are not required for the homework
-select first_name, last_name from actor WHERE first_name = 'GROUCHO' and last_name = 'WILLIAMS';
-UPDATE actor SET first_name = 'HARPO' WHERE first_name = 'GROUCHO' and last_name = 'WILLIAMS';
-select first_name, last_name from actor WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
-UPDATE actor SET first_name = upper('HARPO') WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
+SELECT 
+    first_name, last_name
+FROM
+    actor
+WHERE
+    first_name = 'GROUCHO'
+        AND last_name = 'WILLIAMS';
+UPDATE actor 
+SET 
+    first_name = 'HARPO'
+WHERE
+    first_name = 'GROUCHO'
+        AND last_name = 'WILLIAMS';
+SELECT 
+    first_name, last_name
+FROM
+    actor
+WHERE
+    first_name = 'HARPO'
+        AND last_name = 'WILLIAMS';
+UPDATE actor 
+SET 
+    first_name = UPPER('HARPO')
+WHERE
+    first_name = 'HARPO'
+        AND last_name = 'WILLIAMS';
 
 -- 4d. Perhaps we were too hasty in changing GROUCHO to HARPO .
 -- It turns out that GROUCHO was the correct name after all!
 -- In a single query, if the first name of the actor is currently HARPO,
 -- change it to GROUCHO
-select first_name, last_name from actor WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
-UPDATE actor SET first_name = 'GROUCHO' WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
-select first_name, last_name from actor WHERE first_name = 'GROUCHO' and last_name = 'WILLIAMS';
+SELECT 
+    first_name, last_name
+FROM
+    actor
+WHERE
+    first_name = 'HARPO'
+        AND last_name = 'WILLIAMS';
+UPDATE actor 
+SET 
+    first_name = 'GROUCHO'
+WHERE
+    first_name = 'HARPO'
+        AND last_name = 'WILLIAMS';
+SELECT 
+    first_name, last_name
+FROM
+    actor
+WHERE
+    first_name = 'GROUCHO'
+        AND last_name = 'WILLIAMS';
+
+-- 5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
+show create table address;
+# Table, Create Table
+-- CREATE TABLE `address` (
+--   `address_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+--   `address` varchar(50) NOT NULL,
+--   `address2` varchar(50) DEFAULT NULL,
+--   `district` varchar(20) NOT NULL,
+--   `city_id` smallint(5) unsigned NOT NULL,
+--   `postal_code` varchar(10) DEFAULT NULL,
+--   `phone` varchar(20) NOT NULL,
+--   `location` geometry NOT NULL,
+--   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   PRIMARY KEY (`address_id`),
+--   KEY `idx_fk_city_id` (`city_id`),
+--   SPATIAL KEY `idx_location` (`location`),
+--   CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON UPDATE CASCADE
+-- ) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8
+
+-- 6a. Use JOIN to display the first and last names, as well as the address,
+-- of each staff member. Use the tables staff and address :
