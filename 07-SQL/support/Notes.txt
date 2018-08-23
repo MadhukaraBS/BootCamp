@@ -1,0 +1,5 @@
+https://stackoverflow.com/questions/10156965/select-all-where-first-letter-starts-with-b
+https://dev.mysql.com/doc/refman/8.0/en/regexp.html
+https://dev.mysql.com/doc/refman/8.0/en/pattern-matching.html
+https://regexone.com/
+https://autohotkey.com/docs/misc/RegEx-QuickRef.htm
