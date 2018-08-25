@@ -142,58 +142,148 @@ WHERE
 
 -- 5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
 show create table address;
-# Table, Create Table
--- CREATE TABLE `address` (
---   `address_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
---   `address` varchar(50) NOT NULL,
---   `address2` varchar(50) DEFAULT NULL,
---   `district` varchar(20) NOT NULL,
---   `city_id` smallint(5) unsigned NOT NULL,
---   `postal_code` varchar(10) DEFAULT NULL,
---   `phone` varchar(20) NOT NULL,
---   `location` geometry NOT NULL,
---   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---   PRIMARY KEY (`address_id`),
---   KEY `idx_fk_city_id` (`city_id`),
---   SPATIAL KEY `idx_location` (`location`),
---   CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON UPDATE CASCADE
--- ) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8
-
--- 6a. Use JOIN to display the first and last names, as well as the address,
--- of each staff member. Use the tables staff and address :
--- select * from address;
--- select * from staff;
-select first_name, last_name, address
-from staff
-join address using (address_id);
+SELECT 
+    first_name, last_name, address
+FROM
+    staff
+        JOIN
+    address USING (address_id);
 
 -- 6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. Use
 -- tables staff and payment .
-select staff_id, first_name, last_name, sum(amount)
-from staff s
-join payment p using (staff_id)
-where DATE(payment_date) > '2005-07-31' and DATE(payment_date) < '2005-09-01'
-group by staff_id;
+SELECT 
+    staff_id, first_name, last_name, SUM(amount)
+FROM
+    staff s
+        JOIN
+    payment p USING (staff_id)
+WHERE
+    DATE(payment_date) > '2005-07-31'
+        AND DATE(payment_date) < '2005-09-01'
+GROUP BY staff_id;
 
 -- select count(*) from staff;
 -- select customer_id, staff_id from payment;
 -- select customer_id, staff_id, payment_date from payment where DATE(payment_date) > '2005-07-31' and DATE(payment_date) < '2005-09-01';
 -- select staff_id, count(*) from payment group by staff_id;
 
--- 6c. List each film and the number of actors who are listed
--- for that film. Use tables film_actor and film . Use
--- inner join.
-
-select title, count(*) as `Number of Actors` from film f
-inner join film_actor fa using (film_id)
-group by title;
+SELECT 
+    title, COUNT(*) AS `Number of Actors`
+FROM
+    film f
+        INNER JOIN
+    film_actor fa USING (film_id)
+GROUP BY title;
 
 -- 6d. How many copies of the film Hunchback Impossible exist in the inventory system?
-select title, count(*) from film f
-inner join inventory i on f.film_id = i.film_id
-where f.title = 'Hunchback Impossible'
-group by title;
+SELECT 
+    title, COUNT(*) AS `Total records`
+FROM
+    film f
+        INNER JOIN
+    inventory i ON f.film_id = i.film_id
+WHERE
+    f.title = 'Hunchback Impossible'
+GROUP BY title;
 
 -- 6e. Using the tables payment and customer and the
 -- JOIN command, list the total paid by each customer. List
 -- the customers alphabetically by last name:
+SELECT 
+    c.first_name, c.last_name, SUM(p.amount) AS `Total amount`
+FROM
+    payment p
+        INNER JOIN
+    customer c ON p.customer_id = c.customer_id
+GROUP BY c.customer_id
+ORDER BY c.last_name;
+
+-- 7a. The music of Queen and Kris Kristofferson have seen an
+-- unlikely resurgence. As an unintended consequence, films
+-- starting with the letters K and Q have also soared in
+-- popularity. Use subqueries to display the titles of movies
+-- starting with the letters K and Q whose language is English.
+SELECT 
+    title, l.language_id, l.name
+FROM
+    film f
+        JOIN
+    language l ON f.language_id = l.language_id
+        AND l.name = 'English'
+        AND title REGEXP '^[KQ].*';
+
+SELECT 
+    title
+FROM
+    film
+WHERE
+    title REGEXP '^[KQ].*'
+        AND language_id IN (SELECT 
+            language_id
+        FROM
+            language
+        WHERE
+            name = 'English');
+
+-- 7b. Use subqueries to display all actors who appear in the film Alone Trip .
+SELECT 
+    first_name, last_name
+FROM
+    actor
+WHERE
+    actor_id IN (SELECT 
+            actor_id
+        FROM
+            film_actor
+        WHERE
+            film_id IN (SELECT 
+                    film_id
+                FROM
+                    film
+                WHERE
+                    title = 'Alone Trip'));
+
+-- Individual queries
+-- SELECT 
+--     film_id
+-- FROM
+--     film
+-- WHERE
+--     title = 'Alone Trip';
+-- SELECT 
+--     actor_id
+-- FROM
+--     film_actor
+-- WHERE
+--     film_id = 17;
+-- SELECT 
+--     first_name, last_name
+-- FROM
+--     actor
+-- WHERE
+--     actor_id IN (3 , 12, 13, 82, 100, 160, 167, 187);
+
+-- 7c. You want to run an email marketing campaign
+-- in Canada, for which you will need the names and email
+-- addresses of all Canadian customers. Use joins
+-- to retrieve this information.
+-- customer --> address --> city --> country
+-- Retrieving city and country to show actual city and country
+select first_name, last_name, email, city, country from customer cu
+inner join address ad using (address_id)
+-- select address_id from address ad
+inner join city ct using (city_id)
+-- select city_id, city from city ct
+inner join country co using (country_id)
+where co.country = 'Canada';
+
+-- 7d. Sales have been lagging among young families, and you
+-- wish to target all family movies for a promotion.  Identify
+-- all movies categorized as family films.
+select title as `Movie Title`, ct.name from film f
+inner join film_category fc using(film_id)
+inner join category ct using(category_id)
+where ct.name = 'Family';
+
+-- 7e. Display the most frequently rented movies in descending order.
+select * from rental order by rental_date desc;
