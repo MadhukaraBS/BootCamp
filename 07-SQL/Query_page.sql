@@ -291,63 +291,18 @@ WHERE
     ct.name = 'Family';
 
 -- 7e. Display the most frequently rented movies in descending order.
-SELECT 
-    title
-FROM
-    film
-WHERE
-    film_id IN (SELECT 
-            i.film_id
-        FROM
-            inventory i
-                INNER JOIN
-            rental r USING (inventory_id)
-        GROUP BY inventory_id
-        ORDER BY COUNT(*) DESC);
-
-SELECT 
-    inventory_id, COUNT(*)
-FROM
-    rental
-GROUP BY inventory_id
-ORDER BY COUNT(*) DESC;
-SELECT 
-    *
-FROM
-    inventory
-WHERE
-    inventory_id = 2195;
-SELECT 
-    title
-FROM
-    film
-WHERE
-    film_id = 474;
-
-SELECT 
-    title, r.inventory_id
-FROM
-    film
-        INNER JOIN
-    inventory i USING (film_id)
-        INNER JOIN
-    rental r USING (inventory_id)
-GROUP BY r.inventory_id
-ORDER BY COUNT(r.inventory_id) DESC;
-
-SELECT 
-    title, film_id, GROUP_CONCAT(i.inventory_id)
-FROM
-    film
-        LEFT JOIN
-    inventory i USING (film_id)
-GROUP BY title;
-SELECT 
-    inventory_id, COUNT(*)
-FROM
-    rental
-GROUP BY inventory_id
-ORDER BY COUNT(*) DESC;
+-- First inner join rental and inventory tables on key inventory_id
+-- Then group by film_id. This will remove inventory_id and use film_id
+-- to count total number of rentals
+-- Then order descending by rental count
+-- select group_concat(rental_id), (select title from film f2 where f2.film_id = i.film_id) as `Movie title`, count(rental_id) from inventory i
+-- inner join rental r using(inventory_id)
+-- group by film_id
+-- order by count(rental_id) desc;
+select (select title from film f2 where f2.film_id = i.film_id) as `Movie title` from inventory i
+inner join rental r using(inventory_id)
+group by film_id
+order by count(rental_id) desc;
 
 -- above Incomplete
 
