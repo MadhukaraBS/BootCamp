@@ -263,27 +263,101 @@ WHERE
 -- WHERE
 --     actor_id IN (3 , 12, 13, 82, 100, 160, 167, 187);
 
--- 7c. You want to run an email marketing campaign
--- in Canada, for which you will need the names and email
--- addresses of all Canadian customers. Use joins
--- to retrieve this information.
--- customer --> address --> city --> country
--- Retrieving city and country to show actual city and country
-select first_name, last_name, email, city, country from customer cu
-inner join address ad using (address_id)
--- select address_id from address ad
-inner join city ct using (city_id)
--- select city_id, city from city ct
-inner join country co using (country_id)
-where co.country = 'Canada';
+SELECT 
+    first_name, last_name, email, city, country
+FROM
+    customer cu
+        INNER JOIN
+    address ad USING (address_id)
+        INNER JOIN
+    city ct USING (city_id)
+        INNER JOIN
+    country co USING (country_id)
+WHERE
+    co.country = 'Canada';
 
 -- 7d. Sales have been lagging among young families, and you
 -- wish to target all family movies for a promotion.  Identify
 -- all movies categorized as family films.
-select title as `Movie Title`, ct.name from film f
-inner join film_category fc using(film_id)
-inner join category ct using(category_id)
-where ct.name = 'Family';
+SELECT 
+    title AS `Movie Title`, ct.name
+FROM
+    film f
+        INNER JOIN
+    film_category fc USING (film_id)
+        INNER JOIN
+    category ct USING (category_id)
+WHERE
+    ct.name = 'Family';
 
 -- 7e. Display the most frequently rented movies in descending order.
-select * from rental order by rental_date desc;
+SELECT 
+    title
+FROM
+    film
+WHERE
+    film_id IN (SELECT 
+            i.film_id
+        FROM
+            inventory i
+                INNER JOIN
+            rental r USING (inventory_id)
+        GROUP BY inventory_id
+        ORDER BY COUNT(*) DESC);
+
+SELECT 
+    inventory_id, COUNT(*)
+FROM
+    rental
+GROUP BY inventory_id
+ORDER BY COUNT(*) DESC;
+SELECT 
+    *
+FROM
+    inventory
+WHERE
+    inventory_id = 2195;
+SELECT 
+    title
+FROM
+    film
+WHERE
+    film_id = 474;
+
+SELECT 
+    title, r.inventory_id
+FROM
+    film
+        INNER JOIN
+    inventory i USING (film_id)
+        INNER JOIN
+    rental r USING (inventory_id)
+GROUP BY r.inventory_id
+ORDER BY COUNT(r.inventory_id) DESC;
+
+SELECT 
+    title, film_id, GROUP_CONCAT(i.inventory_id)
+FROM
+    film
+        LEFT JOIN
+    inventory i USING (film_id)
+GROUP BY title;
+SELECT 
+    inventory_id, COUNT(*)
+FROM
+    rental
+GROUP BY inventory_id
+ORDER BY COUNT(*) DESC;
+
+-- above Incomplete
+
+SELECT 
+    store_id, SUM(totalpc)
+FROM
+    (SELECT 
+        store_id, customer_id, SUM(p.amount) AS totalpc
+    FROM
+        customer
+    INNER JOIN payment p USING (customer_id)
+    GROUP BY customer_id) AS cust_payment
+GROUP BY store_id;
