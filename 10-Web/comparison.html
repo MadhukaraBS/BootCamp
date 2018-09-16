@@ -16,33 +16,46 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
   <style>
-    .double-space {
-    line-height: 2;
-    position: relative; 
-    margin-top: 10px;
-    margin-bottom: 20px;
-    margin-right: 50px;
-    margin-left: 50px;
+    .double-space
+    {
+      line-height: 2;
+      position: relative; 
+      margin-top: 10px;
+      margin-bottom: 20px;
+      margin-right: 50px;
+      margin-left: 50px;
     }
     body
     {
       background-color: #eee;
     }
-    .mycol {
-        background-color: white;
+    .h1Font
+    {
     }
-    @media only screen and (max-width: 1200px) {
-    .mycol {
-        font-size : 30px;
+    @media only screen and (max-width: 1200px)
+    {
+      .h1Font
+      {
+          font-size : 30px;
+      }
     }
+    .h4Font
+    {
+    }
+    @media only screen and (max-width: 600px)
+    {
+      .h4Font
+      {
+          font-size : 18px;
+      }
     }
   </style>
   </head>
 
 <body>
 
-<nav class="navbar navbar-light navbar-expand-sm my-0 py-0" style="background-color: white;">
-  <a href="#" class="navbar-brand d-flex mr-auto">
+<nav class="navbar navbar-light navbar-expand-sm my-0 py-0 pl-5" style="background-color: white;">
+  <a href="index.html" class="navbar-brand d-flex ml-5 mr-auto">
     <img src="images/logo.png" alt="logo" style="width:auto;height:auto;">
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
@@ -56,15 +69,16 @@
               Plots
             </a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Link 1</a>
-              <a class="dropdown-item" href="#">Link 2</a>
-              <a class="dropdown-item" href="#">Link 3</a>
+              <a class="dropdown-item" href="maxtemp.html">vs Temperature</a>
+              <a class="dropdown-item" href="maxtemp.html">vs Humidity</a>
+              <a class="dropdown-item" href="maxtemp.html">vs Cloudiness</a>
+              <a class="dropdown-item" href="maxtemp.html">vs Wind speed</a>
             </div>
           <li class="nav-item">
-              <a class="nav-link" href="#">Comparison</a>
+              <a class="nav-link" href="comparison.html">Comparison</a>
           </li>
           <li class="nav-item">
-              <a class="nav-link" href="#">Data</a>
+              <a class="nav-link" href="data.html">Data</a>
           </li>
           </li>
           
@@ -73,14 +87,37 @@
 </nav>
 
 <div class="container-fluid m-0 p-4 mh-100" style="background-color: #eee;">
-	<div class="row m-0 p-4 w-100 bg-white ">
-		    <h1 class="border-bottom p-3 m-3 display-5 mycol">Comparison:Latitude vs X</h1>
-      <div style="margin:20px" class='d-flex-med'>
-        <img class="img-responsive float-left m-2 p-2 shadow" src="images/fig1.png"  alt="Latitude Vs Temperature">
-        <img class="img-responsive float-left m-2 p-2 shadow" src="images/fig2.png"  alt="Latitude Vs Humidity">
-        <img class="img-responsive float-left m-2 p-2 shadow" src="images/fig3.png"  alt="Latitude Vs Cloudiness">
-        <img class="img-responsive float-left m-2 p-2 shadow" src="images/fig4.png"  alt="Latitude Vs Windspeed">
+	<div class="row m-0 p-0 w-100 bg-white">
+    <h1 class="border-bottom p-3 m-3 display-5 h1Font">Comparison:Latitude vs X</h1>
   </div>
+	<div class="row m-0 p-0 w-100 bg-white ">
+    <h5 class=" bg-white pl-3 ml-3">Click on any plot to get an in-depth analysis</h5><br>
+  </div>
+	<div class="row m-0 p-0 w-100 bg-white ">
+    <div class="p-0 mt-4 m-5 d-flex flex-column justify-content-center">
+      <h4 class="text-center h4Font">vs Max Temperature</h4>
+      <a href="maxtemp.html">
+        <img class="img-fluid float-left p-2 shadow" src="images/fig1.png"  alt="Latitude Vs Temperature">
+      </a>
+    </div>
+    <div class="p-0 m-5 d-flex flex-column justify-content-center">
+      <h4 class="text-center h4Font">vs Humidity</h4>
+      <a href="maxtemp.html">
+        <img class="img-fluid float-left p-2 shadow" src="images/fig2.png"  alt="Latitude Vs Humidity">
+      </a>
+    </div>
+    <div class="p-0 m-5 d-flex flex-column justify-content-center">
+      <h4 class="text-center h4Font">vs Cloudiness</h4>
+      <a href="maxtemp.html">
+        <img class="img-fluid float-left  p-2 shadow" src="images/fig3.png"  alt="Latitude Vs Cloudiness">
+      </a>
+    </div>
+    <div class="p-0 m-5 d-flex flex-column justify-content-center">
+      <h4 class="text-center h4Font">vs Wind Speed</h4>
+      <a href="maxtemp.html">
+        <img class="img-fluid float-left p-2 shadow" src="images/fig4.png"  alt="Latitude Vs Windspeed">
+      </a>
+    </div>
   </div>
 </div>
 
