@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title>Humidity</title>
     <meta charset="utf-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Latest compiled and minified CSS -->
+    <!-- Latest compiled and minified CSS
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+     -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/minty/bootstrap.min.css">
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -30,22 +33,19 @@
     {
       background-color: #eee;
     }
-        .mycol {
-            background-color: white;
-        }
-    @media only screen and (max-width: 1100px) {
-        .mycol {
-            font-size : 30px;
-        }
-    }
-    .h1Font
+    .mycol
     {
+      background-color: white;
+      color: green;
+      font-weight: bold;
     }
-    @media only screen and (max-width: 1200px)
+    @media only screen and (max-width: 1300px)
     {
-      .h1Font
+      .mycol
       {
-          font-size : 30px;
+        color: green;
+        font-weight: bold;
+        font-size : 30px;
       }
     }
     .h4Font
@@ -84,12 +84,11 @@
 
     .NavbarBack
     {
-      background-color: white;
     }
     @media (max-width: 576px) {
     .NavbarBack
     {
-      background-color: green;
+      background-color: green !important;
     }
 }
   </style>
@@ -97,8 +96,8 @@
 
 <body>
 
-<nav class="navbar navbar-light navbar-expand-sm my-0 py-0 pl-5 NavbarBack" style=>
-  <a class="navbar-brand text-white LLogo" href="index.html">Lattitude</a>
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary p-0 NavbarBack">
+  <a class="navbar-brand text-white ml-5 LLogo" href="index.html">Lattitude</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse"
     data-target="#collapsingNavbar3">
       <span class="navbar-toggler-icon"></span>
@@ -111,10 +110,10 @@
               Plots
             </a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="maxtemp.html">vs Temperature</a>
-              <a class="dropdown-item" href="humidity.html">vs Humidity</a>
-              <a class="dropdown-item" href="cloudiness.html">vs Cloudiness</a>
-              <a class="dropdown-item" href="windspeed.html">vs Wind speed</a>
+              <a class="dropdown-item" href="maxtemp.html">Max Temperature</a>
+              <a class="dropdown-item" href="humidity.html">Humidity</a>
+              <a class="dropdown-item" href="cloudiness.html">Cloudiness</a>
+              <a class="dropdown-item" href="windspeed.html">Wind speed</a>
             </div>
           <li class="nav-item">
               <a class="nav-link" href="comparison.html">Comparison</a>
@@ -132,16 +131,18 @@
 	<div class="row m-0 p-4 w-90">
 		<div class="col-lg-8">
       <div style="margin:20px" class='bg-white shadow'>
-        <h1 class="border-bottom p-3 m-3 display-5 mycol">Humidity</h1>
+        <h1 class="border-bottom p-3 m-3 mycol">Humidity</h1>
         <div class="clearfix my-4">
         <img class="img-fluid float-left p-2" src="images/fig2.png"  style="width:40%;height:40%;" alt="Latitude Vs Humidity">
-        <p class="double-space">As expected, the weather becomes significantly warmer as one approaches the equator (0 Deg. Latitude). More interestingly, however, is the fact that the southern hemisphere tends to be warmer this time of year than the northern hemisphere. This may be due to the tilt of the earth at the time of the year this data was gathered</p>
+		<div class="double-space  m-2 p-2">
+        <p>Saturation occurs in air that holds very little water vapor even when the air is relatively dry. As a consequence, the relative humidity is higher at polar regions than at 30o latitude, while the specific humidity is higher at 30o than at polar regions. Not all regions of the earth around 30o latitude are desert.</p>
+      </div>
       </div>
     </div>
 		</div>
 		<div class="col-lg-4">
       <div style="margin:20px" class='bg-white clearfix shadow'>
-		    <h1 class="border-bottom p-3 m-3 display-5 mycol">Visualizations</h1>
+		    <h1 class="border-bottom p-3 m-3 mycol">Visualizations</h1>
         <a href="maxtemp.html">
           <img class="img-fluid hoverable float-left p-2 box"
              src="images/fig1.png"  style="width:50%" alt="Latitude Vs Temperature">
