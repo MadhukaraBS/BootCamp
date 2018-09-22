@@ -25,6 +25,7 @@ def scrape():
     soup = BeautifulSoup(html, "html.parser")
 
     news_title = soup.find("div", class_="content_title").get_text()
+    browser.is_element_present_by_text("article_teaser_body", wait_time=1)
     news_p = soup.find("div", class_="article_teaser_body").get_text()
 
     listings["news_title"] = news_title
@@ -36,6 +37,7 @@ def scrape():
     url = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
     browser.visit(url)
 
+    browser.is_element_present_by_text("FULL IMAGE", wait_time=0.5)
     browser.click_link_by_partial_text('FULL IMAGE')
     browser.is_element_present_by_text("more info", wait_time=0.5)
     browser.click_link_by_partial_text('more info')
@@ -55,6 +57,7 @@ def scrape():
     browser.visit(url)
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
+    browser.is_element_present_by_text("js-tweet-text-container", wait_time=0.5)
     mars_weather = soup.find("div", class_="js-tweet-text-container").p.text
     
     listings["mars_weather"] = mars_weather
@@ -64,7 +67,7 @@ def scrape():
 
     url = "http://space-facts.com/mars/"
     tables = pd.read_html(url)
-    mars_html_table = tables[0].to_html
+    mars_html_table = tables[0].to_html()
 
     listings["mars_html_table"] = mars_html_table
 
@@ -94,24 +97,23 @@ def scrape():
 
     listings["hemisphere_image_urls"] = hemisphere_image_urls
 
-
+    browser.quit()
 
     return listings
 
 
 
+if __name__ == "__main__":
+  dict_listing = scrape()
+  print(dict_listing)
 
-dict_listing = scrape()
-
-print(dict_listing)
-
-print(dic_listing['news_title'])
-print(dic_listing['news_p'])
-print(dic_listing['img_link'])
-print(dic_listing['mars_weather'])
-print(dic_listing['mars_html_table'])
-for i in dic_listing['hemisphere_image_urls']:
-  print(i['title'])
-  print(i['img_url'])
-  print('-' * 50)
+  print(dict_listing['news_title'])
+  print(dict_listing['news_p'])
+  print(dict_listing['img_link'])
+  print(dict_listing['mars_weather'])
+  print(dict_listing['mars_html_table'])
+  for i in dict_listing['hemisphere_image_urls']:
+    print(i['title'])
+    print(i['img_url'])
+    print('-' * 50)
 
