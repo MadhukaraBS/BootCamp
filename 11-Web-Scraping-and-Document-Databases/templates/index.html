@@ -10,6 +10,11 @@
 
     <title>Mars</title>
     <style>
+      .firstHead
+      {
+        font-weight: bold;
+        font-size : 70px;
+      }
       .border-3
       {
         border-width:3px !important;
@@ -21,7 +26,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="jumbotron text-center">
-            <h1>Mission to Mars	</h1>
+            <h1 class="firstHead">Mission to Mars	</h1>
             <p>
               <a class="btn btn-primary btn-large" href="/scrape" role='button'>Scrape New Data</a>
             </p>
@@ -58,15 +63,17 @@
             </div>
             <h3 class="mt-3">Mars Facts</h3>
             <div class="row">
+              <div class="col-md-12">
 
               {{ mars_dict.mars_html_table | safe }}
 
+              </div>
             </div>          
           </div>
         </div>
       </div> <!-- Row -->
       <div class="row">
-        <div class="col-md-12 border border-secondary my-5 text-center">
+        <div class="col-md-12 border-bottom border-top my-5 text-center">
           <h2>Mars Hemispheres</h2>
         </div>
       </div>

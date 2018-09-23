@@ -8,9 +8,6 @@ client = pymongo.MongoClient("mongodb://localhost:27017")
 db = client.mars_db
 collection = db.mars_data_coll
 
-# Or set inline
-# mongo = PyMongo(app, uri="mongodb://localhost:27017/craigslist_app")
-
 @app.route("/")
 def index():
     mars_dict = collection.find_one()

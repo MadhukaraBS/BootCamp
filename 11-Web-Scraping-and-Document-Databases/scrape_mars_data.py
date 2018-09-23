@@ -58,7 +58,20 @@ def scrape():
     html = browser.html
     soup = BeautifulSoup(html, "html.parser")
     browser.is_element_present_by_text("js-tweet-text-container", wait_time=0.5)
-    mars_weather = soup.find("div", class_="js-tweet-text-container").p.text
+    originator = soup.find_all("div", class_="stream-item-header")
+    for i in originator:
+      name = i.a.span.strong.text
+      if (name == None):
+          continue
+      print(name)
+      if (name != 'Mars Weather'):
+          continue
+      j = i.parent.find("div", class_="js-tweet-text-container").p.text
+      print(j)
+      mars_weather = j
+      break
+    if(mars_weather == None):
+      mars_weather = soup.find("div", class_="js-tweet-text-container").p.text
     
     listings["mars_weather"] = mars_weather
 
