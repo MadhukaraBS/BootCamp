@@ -11,7 +11,6 @@ d3.select("#filter-btn").on("click", function()
 	var state_filter = d3.select('#state').property('value');
 	var country_filter = d3.select('#country').property('value');
 	var shape_filter = d3.select('#shape').property('value');
-	var duration_filter = d3.select('#duration').property('value');
 
 /*
 	console.log(date_time_filter);
@@ -27,7 +26,6 @@ d3.select("#filter-btn").on("click", function()
   ui_state = state_filter.toLowerCase();
   ui_country = country_filter.toLowerCase();
   ui_shape = shape_filter.toLowerCase();
-  ui_duration = duration_filter.toLowerCase();
 
 	var fdt = tableData.filter(dt => {
 /*
@@ -44,8 +42,6 @@ d3.select("#filter-btn").on("click", function()
 //    console.log("4. ", dt.country, ui_country);
     comp = comp && ((dt.shape == ui_shape) || ui_shape == '') ;
 //    console.log("5. ", dt.shape, ui_shape);
-    comp = comp && ((dt.durationMinutes == ui_duration) || ui_duration == '') ;
-//    console.log("6. ", dt.durationMinutes, ui_duration);
 //    console.log(comp);
     return comp});
 
