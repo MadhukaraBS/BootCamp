@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Flask Plotlyjs Example</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="../css/style.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron text-center">
+        <h1>Belly Button Biodiversity Dashboard</h1>
+        <p>Use the interactive charts below to explore the dataset</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+			<div class="card">
+				<h5 class="card-header">
+					SELECT Sample:
+				</h5>
+				<div class="card-body">
+					<p class="card-text">
+          <select id="selDataset" onchange="optionChanged(this.value)"></select>
+					</p>
+				</div>
+			</div>
+			<div class="card">
+				<h5 class="card-header">
+					Sample MetaData
+				</h5>
+				<div class="card-body">
+					<p class="card-text">
+          <div id="sample-metadata" class="panel-body"></div>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-5">
+        <div id="pie"></div>
+		</div>
+		<div class="col-md-5">
+        <div id="gauge"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+      <div id="bubble"></div>
+		</div>
+	</div>
+</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
