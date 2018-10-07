@@ -148,22 +148,24 @@ function buildCharts(sample) {
 */
     // @TODO: Build a Bubble Chart using the sample data
     var bubbleData = [{
-      x: dataLabels,
-      y: dataValues,
-      text: dataHoverText,
+      x: sampleData.otu_ids,
+      y: sampleData.sample_values,
+      text: sampleData.otu_labels,
       mode: 'markers',
       marker: {
-        size: dataValues,
-        color: bColor
+        size: sampleData.sample_values,
+        sizeref: 1.3,
+        color: sampleData.otu_ids,
+        colorscale: 'Earth'
       }
     }];
 
     var layout = {
       title: '<b>Belly button Bubble Chart</b>',
       showlegend: false,
-      height: 600,
-      width: 1000,
-      margin: 20,
+      //height: 600,
+      //width: 1000,
+      // margin: 20,
       xaxis: {
         title: 'OTU ID',
         titlefont: {
