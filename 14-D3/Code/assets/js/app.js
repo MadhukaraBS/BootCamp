@@ -4,10 +4,10 @@ var svgWidth = 1200;
 var svgHeight = 660;
 
 var margin = {
-  top: 50,
-  right: 50,
-  bottom: 50,
-  left: 50
+  top: 150,
+  right: 150,
+  bottom: 150,
+  left: 150
 };
 
 var height = svgHeight - margin.top - margin.bottom;
@@ -30,7 +30,7 @@ d3.csv('..\\data\\Data.csv').then(function(hData) {
   hData.forEach(function(d) {
     d.poverty = +d.poverty;
     d.healthcare = +d.healthcare;
-    console.log(d.poverty, "  ", d.healthcare);
+    // console.log(d.poverty, "  ", d.healthcare);
   });
 
   // Step 2: Create scale functions
@@ -105,11 +105,6 @@ d3.csv('..\\data\\Data.csv').then(function(hData) {
 	    .attr("stroke", 'lightblue')
       .attr('opacity', '.99')
 	    .attr("fill", 'lightblue');
-    /*
-    elemEnter.append("rect")
-	    .attr("width", 10)
-      .attr('height', 25);
-    */
 
     /* Create the text for each block */
     elemEnter.append("text")
@@ -121,18 +116,41 @@ d3.csv('..\\data\\Data.csv').then(function(hData) {
       .style('fill', 'white')
       .style("font-weight", "bold");
 
+    // text label for the x axis
+    svg.append("text")             
+        .attr("transform",
+              "translate(" + ( margin.left + (width/2))  + " ," + 
+                             (height + margin.top + 50) + ")")
+        .style("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .text("In Poverty (%)");
+
+    // text label for the y axis
+    svg.append("text")             
+        .attr("transform",
+            `translate(${(margin.left - 50)}, ${(height/2) + margin.top}) rotate(-90)`)
+        .style("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .text("Lacks Healthcare (%)");
+
 
   // Step 6: Initialize tool tip
   // ==============================
   var toolTip = d3.tip()
-    .attr('class', 'tooltip')
-    .offset([80, -60])
+    .attr('class', 'd3-tip')
+    .offset([-10, -50])
     .html(function(d) {
-      return (`Poverty: ${d.poverty}<br>Healthcare: ${d.healthcare}`);
+      return (`${d.abbr}<br>Poverty: ${d.poverty}<br>Healthcare: ${d.healthcare}`);
+//      return ("Hello");
     });
 
   // Step 7: Create tooltip in the chart
   // ==============================
   chartGroup.call(toolTip);
+
+    elemEnter
+    .on('mouseover', toolTip.show)
+    .on('mouseout', toolTip.hide);
+
 
 });
