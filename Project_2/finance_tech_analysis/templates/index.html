@@ -42,83 +42,185 @@
         stroke: #FF0000;
     }
 
-	</style>
+    path.volume {
+        fill: #AAAAAA;
+        opacity: 0.5;
+    }
+
+    path.volume.up {
+        fill: #00AA00;
+    }
+
+    path.volume.up:hover {
+        fill: #0000CC;
+        opacity: 0.8;
+    }
+
+    path.volume.down {
+        fill: #FF0000;
+    }
+    
+    path.volume.down:hover {
+        fill: #FF9900;
+        opacity: 0.8;
+    }
+    
+  </style>
 </head>
 
 <body>
-  <div id="line"></div>
-	<script>
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+  <script>
+    function makeResponsiveChart() {
+      var margin = {top: 20, right: 20, bottom: 30, left: 50},
+          width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
 
-    var parseDate = d3.timeParse("%m/%d/%Y");
+      var parseDate = d3.timeParse("%m/%d/%Y");
 
-    var x = techan.scale.financetime()
-            .range([0, width]);
+      /* --------------------------------- */
+      /* Candle stick plot                 */
+      /* --------------------------------- */
 
-    var y = d3.scaleLinear()
-            .range([height/2, 0]);
+      var x = techan.scale.financetime()
+              .range([0, width]);
 
-    var candlestick = techan.plot.candlestick()
-            .xScale(x)
-            .yScale(y);
+      var y = d3.scaleLinear()
+              .range([(height/2) -30, 0]);
 
-    var xAxis = d3.axisBottom()
-            .scale(x);
+      var candlestick = techan.plot.candlestick()
+              .xScale(x)
+              .yScale(y);
 
-    var yAxis = d3.axisLeft()
-            .scale(y);
+      var xAxis = d3.axisBottom()
+              .scale(x);
 
-    var svg = d3.select("body").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      var yAxis = d3.axisLeft()
+              .scale(y);
 
-    d3.json('/line').then(function(data) {
-        var accessor = candlestick.accessor();
+      /* --------------------------------- */
+      /* Volume plot                       */
+      /* --------------------------------- */
 
-    //data = data.slice(0, 30);
-        data = data.map(function(d) {
-            return {
-                date: parseDate(d.Date),
-                open: +d.Open,
-                high: +d.High,
-                low: +d.Low,
-                close: +d.Close,
-                volume: +d.Volume
-            };
-        }).sort(function(a, b) { return d3.ascending(accessor.d(a), accessor.d(b)); });
+      var x1 = techan.scale.financetime()
+              .range([0, width]);
 
-        svg.append("g")
-                .attr("class", "candlestick");
+      var y1 = d3.scaleLinear()
+              .range([height, (height/2) + 30]);
 
-        svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height/2 + ")");
+      var volume = techan.plot.volume()
+              .accessor(techan.accessor.ohlc())   // For volume bar highlighting
+              .xScale(x1)
+              .yScale(y1);
 
-        svg.append("g")
-                .attr("class", "y axis")
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
-                .style("text-anchor", "end")
-                .text("Price ($)");
+      var xAxis1 = d3.axisBottom(x1);
 
-        // Data to display initially
-        draw(data.slice(0, 20));
-    });
+      var yAxis1 = d3.axisLeft(y1)
+              .tickFormat(d3.format(",.3s"));
 
-    function draw(data) {
-        x.domain(data.map(candlestick.accessor().d));
-        y.domain(techan.scale.plot.ohlc(data, candlestick.accessor()).domain());
+      /* --------------------------------- */
+      /* SVG plot                          */
+      /* --------------------------------- */
 
-        svg.selectAll("g.candlestick").datum(data).call(candlestick);
-        svg.selectAll("g.x.axis").call(xAxis);
-        svg.selectAll("g.y.axis").call(yAxis);
+      var svg = d3.select("body").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      d3.json('/line').then(function(data) {
+          var accessor1 = candlestick.accessor();
+          var accessor2 = volume.accessor();
+
+          data1 = data.map(function(d) {
+              return {
+                  date: parseDate(d.Date),
+                  open: +d.Open,
+                  high: +d.High,
+                  low: +d.Low,
+                  close: +d.Close,
+                  volume: +d.Volume
+              };
+          }).sort(function(a, b) { return d3.ascending(accessor1.d(a), accessor1.d(b)); });
+
+          data1 = data.map(function(d) {
+              return {
+                  date: parseDate(d.Date),
+                  open: +d.Open,
+                  high: +d.High,
+                  low: +d.Low,
+                  close: +d.Close,
+                  volume: +d.Volume
+              };
+          }).sort(function(a, b) { return d3.ascending(accessor1.d(a), accessor1.d(b)); });
+
+          data2 = data.map(function(d) {
+              return {
+                  date: parseDate(d.Date),
+                  volume: +d.Volume,
+                  open: +d.Open,
+                  high: +d.High,
+                  low: +d.Low,
+                  close: +d.Close,
+              };
+          }).sort(function(a, b) { return d3.ascending(accessor2.d(a), accessor2.d(b)); });
+
+          svg.append("g")
+                  .attr("class", "candlestick");
+
+          svg.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + ((height/2) - 30) + ")");
+
+          svg.append("g")
+                  .attr("class", "y axis")
+                  .append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 6)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "end")
+                  .text("Price ($)");
+
+          svg.append("g")
+                  .attr("class", "volume");
+
+          svg.append("g")
+                  .attr("class", "x axis1")
+                  .attr("transform", "translate(0," + height + ")");
+
+          svg.append("g")
+                  .attr("class", "y axis1")
+                  .append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("x", -1 * (height/2))
+                  .attr("y", 6)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "end")
+                  .text("Volume");
+
+          draw_cs(x, y, data1.slice(0, 20), candlestick, svg, xAxis, yAxis);
+          draw_volume(x1, y1, data2.slice(0, 20), volume, svg, xAxis1, yAxis1);
+      });
     }
+
+      function draw_cs(xval, yval, data, ar, svg, xAxis, yAxis) {
+          xval.domain(data.map(ar.accessor().d));
+          yval.domain(techan.scale.plot.ohlc(data, ar.accessor()).domain());
+
+          svg.selectAll("g.candlestick").datum(data).call(ar);
+          svg.selectAll("g.x.axis").call(xAxis);
+          svg.selectAll("g.y.axis").call(yAxis);
+      }
+
+      function draw_volume(xval, yval, data, ar, svg, xAxis, yAxis) {
+          xval.domain(data.map(ar.accessor().d));
+          yval.domain(techan.scale.plot.volume(data, ar.accessor().v).domain());
+
+          svg.selectAll("g.volume").datum(data).call(ar);
+          svg.selectAll("g.x.axis1").call(xAxis);
+          svg.selectAll("g.y.axis1").call(yAxis);
+      }
+    makeResponsiveChart();
+
 	</script>
 </body>
 
