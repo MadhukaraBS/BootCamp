@@ -70,88 +70,109 @@
 
 <body>
   <script>
-    function makeResponsiveChart() {
-      var margin = {top: 20, right: 20, bottom: 30, left: 50},
-          width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
 
-      var parseDate = d3.timeParse("%m/%d/%Y");
-
+    function draw_candlestick_plot(width, height, svg) {
       /* --------------------------------- */
       /* Candle stick plot                 */
       /* --------------------------------- */
 
-      var x = techan.scale.financetime()
+      let x = techan.scale.financetime()
               .range([0, width]);
 
-      var y = d3.scaleLinear()
+      let y = d3.scaleLinear()
               .range([(height/2) -30, 0]);
 
-      var candlestick = techan.plot.candlestick()
+      let candlestick = techan.plot.candlestick()
               .xScale(x)
               .yScale(y);
+      let ar = candlestick.accessor();
 
-      var xAxis = d3.axisBottom()
+      let xAxis = d3.axisBottom()
               .scale(x);
 
-      var yAxis = d3.axisLeft()
+      let yAxis = d3.axisLeft()
               .scale(y);
 
+      svg.append("g")
+              .attr("class", "candlestick");
+
+      svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + ((height/2) - 30) + ")");
+
+      svg.append("g")
+              .attr("class", "y axis")
+              .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("Price ($)");
+
+      let parseDate = d3.timeParse("%m/%d/%Y");
+
+      d3.json('/line').then(function(data) {
+          let csdata = data.map(function(d) {
+              return {
+                  date: parseDate(d.Date),
+                  open: +d.Open,
+                  high: +d.High,
+                  low: +d.Low,
+                  close: +d.Close,
+                  volume: +d.Volume
+              };
+          }).sort(function(a, b) { return d3.ascending(ar.d(a), ar.d(b)); });
+          x.domain(csdata.map(candlestick.accessor().d));
+          y.domain(techan.scale.plot.ohlc(csdata, candlestick.accessor()).domain());
+
+          svg.selectAll("g.candlestick").datum(csdata).call(candlestick);
+          svg.selectAll("g.x.axis").call(xAxis);
+          svg.selectAll("g.y.axis").call(yAxis);
+      });
+    }
+
+    function draw_volume_plot(width, height, svg) {
       /* --------------------------------- */
       /* Volume plot                       */
       /* --------------------------------- */
 
-      var x1 = techan.scale.financetime()
+      let x = techan.scale.financetime()
               .range([0, width]);
 
-      var y1 = d3.scaleLinear()
+      let y = d3.scaleLinear()
               .range([height, (height/2) + 30]);
 
-      var volume = techan.plot.volume()
+      let volume = techan.plot.volume()
               .accessor(techan.accessor.ohlc())   // For volume bar highlighting
-              .xScale(x1)
-              .yScale(y1);
+              .xScale(x)
+              .yScale(y);
 
-      var xAxis1 = d3.axisBottom(x1);
+      let xAxis = d3.axisBottom(x);
 
-      var yAxis1 = d3.axisLeft(y1)
+      let yAxis = d3.axisLeft(y)
               .tickFormat(d3.format(",.3s"));
 
-      /* --------------------------------- */
-      /* SVG plot                          */
-      /* --------------------------------- */
+      svg.append("g")
+              .attr("class", "volume");
 
-      var svg = d3.select("body").append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      svg.append("g")
+              .attr("class", "x volaxis")
+              .attr("transform", "translate(0," + height + ")");
+
+      svg.append("g")
+              .attr("class", "y volaxis")
+              .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("x", -1 * (height/2))
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("Volume");
+
+      let parseDate = d3.timeParse("%m/%d/%Y");
 
       d3.json('/line').then(function(data) {
-          var accessor1 = candlestick.accessor();
-          var accessor2 = volume.accessor();
-
-          data1 = data.map(function(d) {
-              return {
-                  date: parseDate(d.Date),
-                  open: +d.Open,
-                  high: +d.High,
-                  low: +d.Low,
-                  close: +d.Close,
-                  volume: +d.Volume
-              };
-          }).sort(function(a, b) { return d3.ascending(accessor1.d(a), accessor1.d(b)); });
-
-          data1 = data.map(function(d) {
-              return {
-                  date: parseDate(d.Date),
-                  open: +d.Open,
-                  high: +d.High,
-                  low: +d.Low,
-                  close: +d.Close,
-                  volume: +d.Volume
-              };
-          }).sort(function(a, b) { return d3.ascending(accessor1.d(a), accessor1.d(b)); });
+          let accessor2 = volume.accessor();
 
           data2 = data.map(function(d) {
               return {
@@ -164,42 +185,40 @@
               };
           }).sort(function(a, b) { return d3.ascending(accessor2.d(a), accessor2.d(b)); });
 
-          svg.append("g")
-                  .attr("class", "candlestick");
+          x.domain(data2.map(volume.accessor().d));
+          y.domain(techan.scale.plot.volume(data2, volume.accessor().v).domain());
 
-          svg.append("g")
-                  .attr("class", "x axis")
-                  .attr("transform", "translate(0," + ((height/2) - 30) + ")");
-
-          svg.append("g")
-                  .attr("class", "y axis")
-                  .append("text")
-                  .attr("transform", "rotate(-90)")
-                  .attr("y", 6)
-                  .attr("dy", ".71em")
-                  .style("text-anchor", "end")
-                  .text("Price ($)");
-
-          svg.append("g")
-                  .attr("class", "volume");
-
-          svg.append("g")
-                  .attr("class", "x axis1")
-                  .attr("transform", "translate(0," + height + ")");
-
-          svg.append("g")
-                  .attr("class", "y axis1")
-                  .append("text")
-                  .attr("transform", "rotate(-90)")
-                  .attr("x", -1 * (height/2))
-                  .attr("y", 6)
-                  .attr("dy", ".71em")
-                  .style("text-anchor", "end")
-                  .text("Volume");
-
-          draw_cs(x, y, data1.slice(0, 20), candlestick, svg, xAxis, yAxis);
-          draw_volume(x1, y1, data2.slice(0, 20), volume, svg, xAxis1, yAxis1);
+          svg.selectAll("g.volume").datum(data2).call(volume);
+          svg.selectAll("g.x.volaxis").call(xAxis);
+          svg.selectAll("g.y.volaxis").call(yAxis);
       });
+    }
+
+    function makeResponsiveChart() {
+      // clear old chart if already rendered
+      d3.select('body').select('svg').remove();
+
+      // SVG wrapper dimensions are determined by the current width and
+      // height of the browser window.
+      let svgWidth = window.innerWidth - 30;
+      let svgHeight = window.innerHeight - 30;
+
+      let margin = {top: 20, right: 20, bottom: 30, left: 50},
+          width = svgWidth - margin.left - margin.right,
+          height = svgHeight - margin.top - margin.bottom;
+
+      /* --------------------------------- */
+      /* SVG plot                          */
+      /* --------------------------------- */
+
+      var svg = d3.select("body").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          draw_candlestick_plot(width, height, svg);
+          draw_volume_plot(width, height, svg);
     }
 
       function draw_cs(xval, yval, data, ar, svg, xAxis, yAxis) {
@@ -221,6 +240,8 @@
       }
     makeResponsiveChart();
 
+    // When the browser window is resized, makeResponsiveChart() is called.
+    d3.select(window).on('resize', makeResponsiveChart);
 	</script>
 </body>
 
