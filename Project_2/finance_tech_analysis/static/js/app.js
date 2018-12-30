@@ -1,216 +1,251 @@
-function draw_candlestick_plot(width, height, svg) {
-/* --------------------------------- */
-/* Candle stick plot                 */
-/* --------------------------------- */
+function draw_candlestick_plot(width, height) {
+  /* --------------------------------- */
+  /* Candle stick plot                 */
+  /* --------------------------------- */
 
-let x = techan.scale.financetime()
-			.range([0, width]);
+  let margin = {top: 20, right: 50, bottom: 30, left: 50};
 
-let y = d3.scaleLinear()
-			.range([(height/3) -30, 0]);
+  width = width - margin.left - margin.right;
+  let x = techan.scale.financetime()
+        .range([0, width]);
 
-let candlestick = techan.plot.candlestick()
-			.xScale(x)
-			.yScale(y);
-let ar = candlestick.accessor();
+  let y = d3.scaleLinear()
+        .range([(height), 0]);
 
-let xAxis = d3.axisBottom()
-			.scale(x);
+  let candlestick = techan.plot.candlestick()
+        .xScale(x)
+        .yScale(y);
+  let ar = candlestick.accessor();
 
-let yAxis = d3.axisLeft()
-			.scale(y);
+  let xAxis = d3.axisBottom()
+        .scale(x);
 
-svg.append("g")
-			.attr("class", "candlestick");
+  let yAxis = d3.axisLeft()
+        .scale(y);
 
-svg.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + ((height/3) - 30) + ")");
+  // clear old chart if already rendered
+  d3.select('#cs-chartArea').select('svg').remove();
 
-svg.append("g")
-			.attr("class", "y axis")
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("x", 0)
-			.attr("y", 6)
-			.attr("dy", ".71em")
-			.style("text-anchor", "end")
-			.text("Price ($)");
+  let svg = d3.select("#cs-chartArea").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-let parseDate = d3.timeParse("%m/%d/%Y");
+  svg.append("g")
+        .attr("class", "candlestick");
 
-d3.json('/line').then(function(data) {
-	let csdata = data.map(function(d) {
-			return {
-					date: parseDate(d.Date),
-					open: +d.Open,
-					high: +d.High,
-					low: +d.Low,
-					close: +d.Close,
-					volume: +d.Volume
-			};
-	}).sort(function(a, b) { return d3.ascending(ar.d(a), ar.d(b)); });
-	x.domain(csdata.map(candlestick.accessor().d));
-	y.domain(techan.scale.plot.ohlc(csdata, candlestick.accessor()).domain());
+  svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (height) + ")");
 
-	svg.selectAll("g.candlestick").datum(csdata).call(candlestick);
-	svg.selectAll("g.x.axis").call(xAxis);
-	svg.selectAll("g.y.axis").call(yAxis);
+  svg.append("g")
+        .attr("class", "y axis")
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", 0)
+        .attr("y", 6)
+        .attr("dy", ".71em")
+	.attr("font-family", "sans-serif")
+	.attr("font-size", "1.5vw")
+	.attr("font-weight", "bold")
+        .style("text-anchor", "end")
+        .text("Price ($)");
+
+  let parseDate = d3.timeParse("%m/%d/%Y");
+
+  d3.json('/line').then(function(data) {
+    let csdata = data.map(function(d) {
+        return {
+            date: parseDate(d.Date),
+            open: +d.Open,
+            high: +d.High,
+            low: +d.Low,
+            close: +d.Close,
+            volume: +d.Volume
+        };
+    }).sort(function(a, b) { return d3.ascending(ar.d(a), ar.d(b)); });
+  x.domain(csdata.map(candlestick.accessor().d));
+  y.domain(techan.scale.plot.ohlc(csdata, candlestick.accessor()).domain());
+
+  svg.selectAll("g.candlestick").datum(csdata).call(candlestick);
+  svg.selectAll("g.x.axis").call(xAxis);
+  svg.selectAll("g.y.axis").call(yAxis);
 });
 }
 
-function draw_volume_plot(width, height, svg) {
-/* --------------------------------- */
-/* Volume plot                       */
-/* --------------------------------- */
+function draw_volume_plot(width, height) {
+  /* --------------------------------- */
+  /* Volume plot                       */
+  /* --------------------------------- */
+  let margin = {top: 20, right: 50, bottom: 30, left: 50};
 
-let x = techan.scale.financetime()
-			.range([0, width]);
+  width = width - margin.left - margin.right;
+  let x = techan.scale.financetime()
+        .range([0, width]);
 
-let y = d3.scaleLinear()
-			.range([(height * 2) / 3 - 30, (height * 1 ) /3]);
+  let y = d3.scaleLinear()
+        .range([height, 0]);
 
-let volume = techan.plot.volume()
-			.accessor(techan.accessor.ohlc())   // For volume bar highlighting
-			.xScale(x)
-			.yScale(y);
+  let volume = techan.plot.volume()
+        .accessor(techan.accessor.ohlc())   // For volume bar highlighting
+        .xScale(x)
+        .yScale(y);
 
-let xAxis = d3.axisBottom(x);
+  let xAxis = d3.axisBottom(x);
 
-let yAxis = d3.axisLeft(y)
-			.tickFormat(d3.format(",.3s"));
+  let yAxis = d3.axisLeft(y)
+        .tickFormat(d3.format(",.3s"));
 
-svg.append("g")
-			.attr("class", "volume");
+  // clear old chart if already rendered
+  d3.select('#vol-chartArea').select('svg').remove();
 
-svg.append("g")
-			.attr("class", "x volaxis")
-			.attr("transform", "translate(0," + ((height * 2) / 3 - 30) + ")");
+  let svg = d3.select("#vol-chartArea").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.append("g")
-			.attr("class", "y volaxis")
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("x", -1 * ((height * 1) / 3))
-			.attr("y", 6)
-			.attr("dy", ".71em")
-			.style("text-anchor", "end")
-			.text("Volume");
+  svg.append("g")
+        .attr("class", "volume");
 
-let parseDate = d3.timeParse("%m/%d/%Y");
+  svg.append("g")
+        .attr("class", "x volaxis")
+        .attr("transform", "translate(0," + height + ")");
 
-d3.json('/line').then(function(data) {
-	let ar = volume.accessor();
+  svg.append("g")
+        .attr("class", "y volaxis")
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", 0)
+        .attr("y", 6)
+        .attr("dy", ".71em")
+	.attr("font-family", "sans-serif")
+	.attr("font-size", "1.5vw")
+	.attr("font-weight", "bold")
+        .style("text-anchor", "end")
+        .text("Volume Plot");
 
-	let voldata = data.map(function(d) {
-			return {
-					date: parseDate(d.Date),
-					volume: +d.Volume,
-					open: +d.Open,
-					high: +d.High,
-					low: +d.Low,
-					close: +d.Close,
-			};
-	}).sort(function(a, b) { return d3.ascending(ar.d(a), ar.d(b)); });
+  let parseDate = d3.timeParse("%m/%d/%Y");
 
-	x.domain(voldata.map(volume.accessor().d));
-	y.domain(techan.scale.plot.volume(voldata, volume.accessor().v).domain());
+  d3.json('/line').then(function(data) {
+    let ar = volume.accessor();
 
-	svg.selectAll("g.volume").datum(voldata).call(volume);
-	svg.selectAll("g.x.volaxis").call(xAxis);
-	svg.selectAll("g.y.volaxis").call(yAxis);
+    let voldata = data.map(function(d) {
+        return {
+            date: parseDate(d.Date),
+            volume: +d.Volume,
+            open: +d.Open,
+            high: +d.High,
+            low: +d.Low,
+            close: +d.Close,
+        };
+    }).sort(function(a, b) { return d3.ascending(ar.d(a), ar.d(b)); });
+
+  x.domain(voldata.map(volume.accessor().d));
+  y.domain(techan.scale.plot.volume(voldata, volume.accessor().v).domain());
+
+  svg.selectAll("g.volume").datum(voldata).call(volume);
+  svg.selectAll("g.x.volaxis").call(xAxis);
+  svg.selectAll("g.y.volaxis").call(yAxis);
 });
 }
 
-function draw_stochastic_plot(width, height, svg) {
-/* --------------------------------- */
-/* Stochastic plot                   */
-/* --------------------------------- */
+function draw_stochastic_plot(width, height) {
+  /* --------------------------------- */
+  /* Stochastic plot                   */
+  /* --------------------------------- */
+  let margin = {top: 20, right: 50, bottom: 30, left: 50};
 
-let x = techan.scale.financetime()
-			.range([0, width]);
+  width = width - margin.left - margin.right;
+  let x = techan.scale.financetime()
+        .range([0, width]);
 
-let y = d3.scaleLinear()
-			.range([height - 30, (height * 2 ) / 3]);
+  let y = d3.scaleLinear()
+        .range([height, 0]);
 
-let stochastic = techan.plot.stochastic()
-			.xScale(x)
-			.yScale(y);
+  let stochastic = techan.plot.stochastic()
+        .xScale(x)
+        .yScale(y);
 
-let xAxis = d3.axisBottom(x);
+  let xAxis = d3.axisBottom(x);
 
-let yAxis = d3.axisLeft(y)
-			.tickFormat(d3.format(",.3s"));
+  let yAxis = d3.axisLeft(y)
+        .tickFormat(d3.format(",.3s"));
 
-svg.append("g")
-			.attr("class", "stochastic");
+  // clear old chart if already rendered
+  d3.select('#stoc-chartArea').select('svg').remove();
 
-svg.append("g")
-			.attr("class", "x stochaxis")
-			.attr("transform", "translate(0," + (height - 30) + ")");
+  let svg = d3.select("#stoc-chartArea").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.append("g")
-			.attr("class", "y stochaxis")
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("x", -1 * ((height * 2) / 3))
-			.attr("y", 6)
-			.attr("dy", ".71em")
-			.style("text-anchor", "end")
-			.text("Stochastic");
+  svg.append("g")
+        .attr("class", "stochastic");
 
-let parseDate = d3.timeParse("%m/%d/%Y");
+  svg.append("g")
+        .attr("class", "x stochaxis")
+        .attr("transform", "translate(0," + (height) + ")");
 
-d3.json('/line').then(function(data) {
-	let ar = stochastic.accessor();
+  svg.append("g")
+        .attr("class", "y stochaxis")
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", 0)
+        .attr("y", 6)
+        .attr("dy", ".71em")
+	.attr("font-family", "sans-serif")
+	.attr("font-size", "1.5vw")
+	.attr("font-weight", "bold")
+        .style("text-anchor", "end")
+        .text("Stochastic Plot");
 
-	let stk_data = data.map(function(d) {
-			return {
-					date: parseDate(d.Date),
-					volume: +d.Volume,
-					open: +d.Open,
-					high: +d.High,
-					low: +d.Low,
-					close: +d.Close,
-			};
-	}).sort(function(a, b) { return d3.ascending(ar.d(a), ar.d(b)); });
+  let parseDate = d3.timeParse("%m/%d/%Y");
 
-	var stochasticData = techan.indicator.stochastic()(stk_data);
-	x.domain(stochasticData.map(stochastic.accessor().d));
-	y.domain(techan.scale.plot.stochastic().domain());
+  d3.json('/line').then(function(data) {
+    let ar = stochastic.accessor();
 
-	svg.selectAll("g.stochastic").datum(stochasticData).call(stochastic);
-	svg.selectAll("g.x.stochaxis").call(xAxis);
-	svg.selectAll("g.y.stochaxis").call(yAxis);
+    let stk_data = data.map(function(d) {
+        return {
+            date: parseDate(d.Date),
+            volume: +d.Volume,
+            open: +d.Open,
+            high: +d.High,
+            low: +d.Low,
+            close: +d.Close,
+        };
+    }).sort(function(a, b) { return d3.ascending(ar.d(a), ar.d(b)); });
+
+  var stochasticData = techan.indicator.stochastic()(stk_data);
+  x.domain(stochasticData.map(stochastic.accessor().d));
+  y.domain(techan.scale.plot.stochastic().domain());
+
+  svg.selectAll("g.stochastic").datum(stochasticData).call(stochastic);
+  svg.selectAll("g.x.stochaxis").call(xAxis);
+  svg.selectAll("g.y.stochaxis").call(yAxis);
 });
 }
+
+
 
 function makeResponsiveChart() {
-// clear old chart if already rendered
-d3.select('body').select('svg').remove();
+  // clear old chart if already rendered
+  d3.select('body').select('svg').remove();
 
-// SVG wrapper dimensions are determined by the current width and
-// height of the browser window.
-let svgWidth = window.innerWidth - 30;
-let svgHeight = window.innerHeight - 30;
+  // SVG wrapper dimensions are determined by the current width and
+  // height of the browser window.
 
-let margin = {top: 20, right: 20, bottom: 30, left: 50},
-	width = svgWidth - margin.left - margin.right,
-	height = svgHeight - margin.top - margin.bottom;
+  let svgWidth = document.getElementById('cs-chartArea').clientWidth;
+  svgWidth = svgWidth - 50;
+  let svgHeight = svgWidth / 3.236;
 
-/* --------------------------------- */
-/* SVG plot                          */
-/* --------------------------------- */
+  let width = svgWidth, height = svgHeight;
 
-var svg = d3.select("body").append("svg")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-draw_candlestick_plot(width, height, svg);
-draw_volume_plot(width, height, svg);
-draw_stochastic_plot(width, height, svg);
+  draw_candlestick_plot(width, height);
+  draw_volume_plot(width, height);
+  draw_stochastic_plot(width, height);
 }
 
 makeResponsiveChart();

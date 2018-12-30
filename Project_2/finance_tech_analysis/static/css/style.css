@@ -2,15 +2,28 @@ body {
 font: 10px sans-serif;
 }
 
-text {
-fill: #000;
+h2
+{
+  font: 4vw "Georgia", serif;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-align: center;
+  letter-spacing: 1px;
+  font-weight: bold;
+  font-style: normal;
+  word-spacing: 10px;
 }
 
-button {
-position: absolute;
-right: 20px;
-top: 440px;
-display: none;
+p
+{
+  font: 2vw sans-serif;
+  margin-top: 0px;
+  text-align: center;
+  text-decoration: underline;
+}
+
+text {
+fill: #000;
 }
 
 path.candle {
@@ -33,7 +46,7 @@ stroke: #FF0000;
 
 path.volume {
 fill: #AAAAAA;
-opacity: 0.5;
+opacity: 0.3;
 }
 
 path.volume.up {
@@ -41,8 +54,8 @@ fill: #00AA00;
 }
 
 path.volume.up:hover {
-fill: #0000CC;
-opacity: 0.8;
+fill: #00AA00;
+opacity: 0.9;
 }
 
 path.volume.down {
@@ -50,8 +63,8 @@ fill: #FF0000;
 }
 
 path.volume.down:hover {
-fill: #FF9900;
-opacity: 0.8;
+fill: #FF0000;
+opacity: 0.9;
 }
 
 .stochastic path {
