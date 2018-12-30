@@ -36,7 +36,6 @@ def index():
 
 @app.route("/line")
 def test():
-    print("1")
     results = db.session.query(
             DailyStockData.Date,
             DailyStockData.Open,
@@ -45,13 +44,9 @@ def test():
             DailyStockData.Close,
             DailyStockData.Volume,
             ).all()
-    print("2")
 
     daily_data = []
-    print("3")
     for result in results:
-        print("4")
-        print(result[0])
         daily_data.append({
             "Date": result[0],
             "Open": result[1],
