@@ -228,6 +228,31 @@ function draw_stochastic_plot(width, height) {
 });
 }
 
+function draw_status_bar(width) {
+  // clear old chart if already rendered
+  d3.select('#status-bar').select('svg').remove();
+
+  let svg = d3.select("#status-bar").append("svg")
+        .attr("width", width)
+        .attr("height", 40)
+        .append("g")
+        .attr("transform", "translate(" + 0 + "," + 0 + ")");
+
+  svg.append("rect")
+     .attr("x", 0)
+     .attr("y", 0)
+     .attr("width", width)
+     .attr("height", 40)
+     .style("fill", 'black')
+
+  svg.append("text")
+     .attr("x", (width / 2))             
+     .attr("y", 24)
+     .attr("text-anchor", "middle")  
+     .style("font-size", "1.5vw")
+     .style("fill", "white")
+     .text("@ Copyright coding bootcamp 2018");
+}
 
 
 function makeResponsiveChart() {
@@ -246,6 +271,7 @@ function makeResponsiveChart() {
   draw_candlestick_plot(width, height);
   draw_volume_plot(width, height);
   draw_stochastic_plot(width, height);
+  draw_status_bar(width);
 }
 
 makeResponsiveChart();
